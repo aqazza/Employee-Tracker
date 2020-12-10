@@ -34,3 +34,32 @@ SELECT * FROM department;
 SELECT * FROM role;
  
 SELECT * FROM employee;
+
+-- Seeds
+-- Department Seeds
+INSERT INTO department (name) VALUE ("Literary");
+INSERT INTO department (name) VALUE ("Production");
+INSERT INTO department (name) VALUE ("Marketing");
+INSERT INTO department (name) VALUE ("Finance");
+
+-- Role seeds
+INSERT INTO role (title, salary, department_id) VALUE ("Artistic Director", 125000, 1); 
+INSERT INTO role (title, salary, department_id) VALUE ("Head of Production", 80000, 2); 
+INSERT INTO role (title, salary, department_id) VALUE ("Communications Director", 85000, 3);
+INSERT INTO role (title, salary, department_id) VALUE ("Managing Director", 120000, 4);
+INSERT INTO role (title, salary, department_id) VALUE ("Artistic Associate", 68000, 1);
+INSERT INTO role (title, salary, department_id) VALUE ("Lighting Director", 60000, 2);
+INSERT INTO role (title, salary, department_id) VALUE ("Props Artisan", 55000, 2);
+INSERT INTO role (title, salary, department_id) VALUE ("Communications Associate", 49000, 3);
+INSERT INTO role (title, salary, department_id) VALUE ("Accounts Payable", 64000, 4);
+
+-- Employee Seeds
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("John", "Doe", 1, 1);  
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Jane", "Bond", 2, 2);  
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Eric", "Zhuang", 3, 3);
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Ashley", "Parrott", 4, 4);
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("John", "Snow", 1, 5);  
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Arya", "Stark", 2, 6); 
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Fitz", "Chivalry", 2, 7); 
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Sydney", "Lee", 3, 8); 
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Willow", "Cat", 4, 9); 
