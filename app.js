@@ -28,6 +28,7 @@ connection.connect(function (err) {
 // BEGIN WORKING CODE
 // ==================================================
 
+// runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
 function runApp() {
   inquirer
     .prompt({
@@ -65,7 +66,7 @@ function runApp() {
               switch (answer.department_options) {
                 case "View a department":
                   break;
-
+                    viewDepartment();
                 case "View all departments":
                   break;
 
@@ -172,4 +173,15 @@ function runApp() {
           break;
       }
     });
+}
+
+// viewDepartment() lets a user select which department they'd like to view, then displays that department
+function viewDepartment() {
+    return inquirer.prompt({
+        name: "view_department",
+        type: "input",
+        message: "Please type the department name:",
+        // TO DO: ADD A VAR THAT AUTO-INSERTS THE APPROPRIATE STRING FOR THE DEPARTMENT HEAD. WE WANT TO DO THIS BECAUSE USERS MAY ADD THEIR OWN DEPARTMENTS LATER
+            if (answer.view_departments === )
+    })
 }
