@@ -10,9 +10,9 @@ const seedDatabase = async () => {
 
   const departments = await Department.bulkCreate(departmentSeedData);
 
-  const roles = await Roles.bulkCreate(roleSeedData);
+  const roles = await Role.bulkCreate(roleSeedData);
 
-  const employees = await Employees.bulkCreate(employeeSeedData)
+  const employees = await Employee.bulkCreate(employeeSeedData);
 
   process.exit(0);
 };
