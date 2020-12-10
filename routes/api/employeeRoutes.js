@@ -15,8 +15,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const employeeData = await Employee.findByPk(req.params.id, {
-      // JOIN with Employee, using the Role through table
-        //   by doing this we can get the combined salary of all employees in a Employee
+      // JOIN with Role, using the Role through table
+        //   by doing this we want to be able to view employees by manager
       include: [{ model: Employee, through: Role, as: 'Employee_budget' }]
     });
 
