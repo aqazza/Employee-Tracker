@@ -26,15 +26,38 @@ connection.connect(function (err) {
 });
 
 // ==================================================
-// FUNCTIONS TO PULL DATA FROM TABLES
+// FUNCTIONS TO PULL/EDIT DATA FROM TABLES
 // ==================================================
 
-// ** Console functions **
+// ** Department functions **
 function viewDepartments() {
   connection.query("SELECT * FROM department;", (err, res) => {
     if (err) throw err;
     console.table(res);
     runApp();
+  });
+}
+
+function addDepartment() {
+  // prompt user to enter new department info
+  inquirer.prompt([
+    {
+      name: "name",
+      type: "input",
+      message: "What is the department's name?"
+    }
+  ]).then((res) => {
+    let query = connection.query(
+      "INSERT INTO department SET ? ",
+      {
+        name: res.name
+      },
+      (err) => {
+        if (err) throw err;
+        console.table(res);
+        runApp();
+      }
+    )
   });
 }
 
@@ -98,6 +121,7 @@ function runApp() {
                   break;
 
                 case "Add a department":
+                  addDepartment();
                   break;
 
                 case "Delete a department":
