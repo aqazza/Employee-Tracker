@@ -31,30 +31,30 @@ connection.connect(function (err) {
 
 // ** Console functions **
 function viewDepartments() {
-    connection.query(("SELECT * FROM department;"), (err, res) => {
-      if (err) throw err;
-      console.table(res);
-      runApp();
-    })
-};
+  connection.query("SELECT * FROM department;", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  });
+}
 
 // ** Role functions **
 function viewRoles() {
-  connection.query(("SELECT * FROM role;"), (err, res) => {
+  connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
     console.table(res);
     runApp();
-  })
-};
+  });
+}
 
-// ** Role functions **
+// ** Employee functions **
 function viewEmployees() {
-  connection.query(("SELECT * FROM employee;"), (err, res) => {
+  connection.query("SELECT * FROM employee;", (err, res) => {
     if (err) throw err;
     console.table(res);
     runApp();
-  })
-};
+  });
+}
 
 // ==================================================
 // BEGIN WORKING CODE
@@ -112,8 +112,7 @@ function runApp() {
               }
             });
 
-        // ***** Department Options
-
+        // ***** Role Options
         case "Role Options":
           return inquirer
             .prompt({
@@ -131,7 +130,6 @@ function runApp() {
             })
             .then((answer) => {
               switch (answer.role_options) {
-
                 case "View all roles":
                   viewRoles();
                   break;
@@ -139,7 +137,6 @@ function runApp() {
                 case "Add a role":
                   break;
 
-                  
                 case "Update a role":
                   break;
 
@@ -152,6 +149,7 @@ function runApp() {
               }
             });
 
+          // Employee Options
         case "Employee Options":
           return inquirer
             .prompt({
@@ -168,10 +166,10 @@ function runApp() {
                 "Delete an employee",
                 "Go back",
               ],
-              // *** role options logic
+            // *** Employee options logic
             })
             .then((answer) => {
-              switch (answer.role_options) {
+              switch (answer.employee_options) {
                 case "View all employees":
                   viewEmployees();
                   break;
