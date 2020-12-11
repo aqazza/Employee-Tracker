@@ -38,27 +38,66 @@ function viewDepartments() {
   });
 }
 
+// empty array to push departments into for concatanation
+let departmentArr = [];
+function departmentNames() {
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      departmentArr.push(res[i].name);
+    }
+  });
+  return departmentArr;
+}
+
 function addDepartment() {
   // prompt user to enter new department info
-  inquirer.prompt([
-    {
-      name: "name",
-      type: "input",
-      message: "What is the department's name?"
-    }
-  ]).then((res) => {
-    let query = connection.query(
-      "INSERT INTO department SET ? ",
+  inquirer
+    .prompt([
       {
-        name: res.name
+        name: "name",
+        type: "input",
+        message: "What is the department's name?",
       },
-      (err) => {
-        if (err) throw err;
-        console.table(res);
-        runApp();
-      }
-    )
-  });
+    ])
+    .then((res) => {
+      let query = connection.query(
+        "INSERT INTO department SET ? ",
+        {
+          name: res.name,
+        },
+        (err) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+}
+
+function deleteDepartment() {
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        type: "list",
+        message: "What is the department's name?",
+        choices: departmentNames(),
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "DELETE FROM department WHERE ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.name} deleted from departments!`);
+          runApp();
+        }
+      );
+    });
 }
 
 // ** Role functions **
@@ -78,7 +117,7 @@ function assignRole() {
     for (var i = 0; i < res.length; i++) {
       roleArr.push(res[i].title);
     }
-  })
+  });
   return roleArr;
 }
 
@@ -93,54 +132,59 @@ function viewEmployees() {
 
 function addEmployee() {
   // prompt user to enter new employee info
-  inquirer.prompt([
-    {
-      name: "first_name",
-      type: "input",
-      message: "What is the employees's first name?"
-    },
-    {
-      name: "last_name",
-      type: "input",
-      message: "What is the employees's last name?"
-    },
-    {
-      name: "role",
-      type: "list",
-      message: "What is the employees's role?",
-      choices: assignRole()
-    },
-    {
-      name: "manager_choice",
-      type: "list",
-      message: "Who is the employees's manager? Keep blank if this employee is a manager.",
-      choices: assignManager()
-    },
-
-  ]).then((res) => {
-    let query = connection.query(
-      "INSERT INTO department SET ? ",
+  inquirer
+    .prompt([
       {
-        name: res.name
+        name: "first_name",
+        type: "input",
+        message: "What is the employees's first name?",
       },
-      (err) => {
-        if (err) throw err;
-        console.table(res);
-        runApp();
-      }
-    )
-  });
+      {
+        name: "last_name",
+        type: "input",
+        message: "What is the employees's last name?",
+      },
+      {
+        name: "role",
+        type: "list",
+        message: "What is the employees's role?",
+        choices: assignRole(),
+      },
+      {
+        name: "manager_choice",
+        type: "list",
+        message:
+          "Who is the employees's manager? Keep blank if this employee is a manager.",
+        choices: assignManager(),
+      },
+    ])
+    .then((res) => {
+      let query = connection.query(
+        "INSERT INTO department SET ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
 }
 
 // empty arr to push manager names into
 let managersArr = [];
 function assignManager() {
-  connection.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL", (err, res) => {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
+  connection.query(
+    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
+    (err, res) => {
+      if (err) throw err;
+      for (var i = 0; i < res.length; i++) {
+        managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
+      }
     }
-  });
+  );
   return managersArr;
 }
 // ==================================================
@@ -189,6 +233,7 @@ function runApp() {
                   break;
 
                 case "Delete a department":
+                  deleteDepartment();
                   break;
 
                 case "View the total utilized budget of a department":
@@ -237,7 +282,7 @@ function runApp() {
               }
             });
 
-          // Employee Options
+        // Employee Options
         case "Employee Options":
           return inquirer
             .prompt({
@@ -254,7 +299,7 @@ function runApp() {
                 "Delete an employee",
                 "Go back",
               ],
-            // *** Employee options logic
+              // *** Employee options logic
             })
             .then((answer) => {
               switch (answer.employee_options) {
