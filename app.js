@@ -4,6 +4,7 @@
 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require("console.table");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -25,9 +26,20 @@ connection.connect(function (err) {
 });
 
 // ==================================================
+// ASYNCHRONOUS FUNCTIONS TO PULL DATA FROM TABLES
+// ==================================================
+// get all departments from db and display as a console.table
+function viewDepartments() {
+    connection.query(("SELECT * FROM department;"), (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      runApp();
+    })
+}
+
+// ==================================================
 // BEGIN WORKING CODE
 // ==================================================
-
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
 function runApp() {
   inquirer
@@ -45,7 +57,6 @@ function runApp() {
     // ***** Department Options
     .then((answer) => {
       switch (answer.action) {
-        
         case "Department Options":
           return inquirer
             .prompt({
@@ -53,7 +64,6 @@ function runApp() {
               type: "rawlist",
               message: "DEPARTMENTS:  What would you like to do?",
               choices: [
-                "View a department",
                 "View all departments",
                 "Add a department",
                 "Delete a department",
@@ -64,10 +74,8 @@ function runApp() {
             })
             .then((answer) => {
               switch (answer.department_options) {
-                case "View a department":
-                  break;
-                    viewDepartment();
                 case "View all departments":
+                  viewDepartments();
                   break;
 
                 case "Add a department":
@@ -170,18 +178,7 @@ function runApp() {
             });
 
         case "End":
-          break;
+          return;
       }
     });
-}
-
-// viewDepartment() lets a user select which department they'd like to view, then displays that department
-function viewDepartment() {
-    return inquirer.prompt({
-        name: "view_department",
-        type: "input",
-        message: "Please type the department name:",
-        // TO DO: ADD A VAR THAT AUTO-INSERTS THE APPROPRIATE STRING FOR THE DEPARTMENT HEAD. WE WANT TO DO THIS BECAUSE USERS MAY ADD THEIR OWN DEPARTMENTS LATER
-            if (answer.view_departments === )
-    })
 }
