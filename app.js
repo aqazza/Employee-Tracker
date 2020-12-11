@@ -70,6 +70,18 @@ function viewRoles() {
   });
 }
 
+// empty array to push roles into for addEmployee function
+let roleArr = [];
+function assignRole() {
+  connection.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      roleArr.push(res[i].title);
+    }
+  })
+  return roleArr;
+}
+
 // ** Employee functions **
 function viewEmployees() {
   connection.query("SELECT * FROM employee;", (err, res) => {
@@ -79,6 +91,58 @@ function viewEmployees() {
   });
 }
 
+function addEmployee() {
+  // prompt user to enter new employee info
+  inquirer.prompt([
+    {
+      name: "first_name",
+      type: "input",
+      message: "What is the employees's first name?"
+    },
+    {
+      name: "last_name",
+      type: "input",
+      message: "What is the employees's last name?"
+    },
+    {
+      name: "role",
+      type: "list",
+      message: "What is the employees's role?",
+      choices: assignRole()
+    },
+    {
+      name: "manager_choice",
+      type: "list",
+      message: "Who is the employees's manager? Keep blank if this employee is a manager.",
+      choices: assignManager()
+    },
+
+  ]).then((res) => {
+    let query = connection.query(
+      "INSERT INTO department SET ? ",
+      {
+        name: res.name
+      },
+      (err) => {
+        if (err) throw err;
+        console.table(res);
+        runApp();
+      }
+    )
+  });
+}
+
+// empty arr to push manager names into
+let managersArr = [];
+function assignManager() {
+  connection.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
+    }
+  });
+  return managersArr;
+}
 // ==================================================
 // BEGIN WORKING CODE
 // ==================================================
@@ -208,6 +272,7 @@ function runApp() {
                   break;
 
                 case "Add an employee":
+                  addEmployee();
                   break;
 
                 case "Update an employee":

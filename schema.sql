@@ -54,10 +54,10 @@ INSERT INTO role (title, salary, department_id) VALUE ("Communications Associate
 INSERT INTO role (title, salary, department_id) VALUE ("Accounts Payable", 64000, 4);
 
 -- Employee Seeds
-INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("John", "Doe", 1, 1);  
-INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Jane", "Bond", 2, 2);  
-INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Eric", "Zhuang", 3, 3);
-INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Ashley", "Parrott", 4, 4);
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("John", "Doe", 1, null);  
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Jane", "Bond", 2, null);  
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Eric", "Zhuang", 3, null);
+INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Ashley", "Parrott", 4, null);
 INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("John", "Snow", 1, 5);  
 INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Arya", "Stark", 2, 6); 
 INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUE ("Fitz", "Chivalry", 2, 7); 
