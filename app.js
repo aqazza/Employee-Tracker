@@ -26,16 +26,35 @@ connection.connect(function (err) {
 });
 
 // ==================================================
-// ASYNCHRONOUS FUNCTIONS TO PULL DATA FROM TABLES
+// FUNCTIONS TO PULL DATA FROM TABLES
 // ==================================================
-// get all departments from db and display as a console.table
+
+// ** Console functions **
 function viewDepartments() {
     connection.query(("SELECT * FROM department;"), (err, res) => {
       if (err) throw err;
       console.table(res);
       runApp();
     })
-}
+};
+
+// ** Role functions **
+function viewRoles() {
+  connection.query(("SELECT * FROM role;"), (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  })
+};
+
+// ** Role functions **
+function viewEmployees() {
+  connection.query(("SELECT * FROM employee;"), (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  })
+};
 
 // ==================================================
 // BEGIN WORKING CODE
@@ -103,8 +122,8 @@ function runApp() {
               message: "ROLES:  What would you like to do?",
               choices: [
                 "View all roles",
-                "View a role",
                 "Add a role",
+                "Update a role",
                 "Delete a role",
                 "Go back",
               ],
@@ -112,13 +131,16 @@ function runApp() {
             })
             .then((answer) => {
               switch (answer.role_options) {
-                case "View a role":
-                  break;
 
                 case "View all roles":
+                  viewRoles();
                   break;
 
                 case "Add a role":
+                  break;
+
+                  
+                case "Update a role":
                   break;
 
                 case "Delete a role":
@@ -137,8 +159,8 @@ function runApp() {
               type: "rawlist",
               message: "EMPLOYEES:  What would you like to do?",
               choices: [
-                "View an employee",
                 "View all employees",
+                "View all employees by role",
                 "View employees by manager",
                 "Update employee managers",
                 "Add an employee",
@@ -150,10 +172,11 @@ function runApp() {
             })
             .then((answer) => {
               switch (answer.role_options) {
-                case "View an employee":
+                case "View all employees":
+                  viewEmployees();
                   break;
 
-                case "View all employees":
+                case "View all employees by role":
                   break;
 
                 case "View employees by manager":
