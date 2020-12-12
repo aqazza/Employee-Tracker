@@ -136,6 +136,43 @@ function assignRole() {
   return roleArr;
 }
 
+function addRole() {
+  // prompt user to enter new role
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "What is the role's title?",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "What is the role's salary?",
+      },
+      {
+        name: "department_id",
+        type: "input",
+        message: "What is the role's department id?",
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "INSERT INTO role SET ? ",
+        {
+          title: res.title,
+          salary: res.salary,
+          department_id: res.department_id,
+        },
+        (err) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+}
+
 // ** Employee functions **
 function viewEmployees() {
   connection.query("SELECT * FROM employee;", (err, res) => {
@@ -284,6 +321,7 @@ function runApp() {
                   break;
 
                 case "Add a role":
+                  addRole();
                   break;
 
                 case "Update a role":
