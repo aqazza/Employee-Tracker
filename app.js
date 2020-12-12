@@ -160,6 +160,7 @@ const runApp = () => {
                   break;
 
                 case "Update an employee":
+                  updateEmployee();
                   break;
 
                 case "Delete an employee":
@@ -437,3 +438,45 @@ const viewEmplByRole = () => {
 //     }
 //   );
 // };
+
+const updateEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        name: "first_name",
+        type: "input",
+        message: "What is the employee's name?",
+        choices: employeeNames(),
+      },
+    ])
+    .then((inquirer.prompt))
+
+
+
+
+    // .then((res) => {
+    //   connection.query(
+    //     "UPDATE employee SET ? WHERE ? ",
+    //     {
+    //       first_name: res.name,
+    //     },
+    //     (err, res) => {
+    //       if (err) throw err;
+    //       console.table(res);
+    //       runApp();
+    //     }
+    //   );
+    // });
+};
+
+// empty arr to push employee names into
+let employeeArr = [];
+const employeeNames = () => {
+  connection.query("SELECT first_name, last_name FROM employee", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      employeeArr.push(`${res[i].first_name} ${res[i].last_name}`);
+    }
+  });
+  return employeeArr;
+};
