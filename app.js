@@ -98,6 +98,23 @@ function deleteDepartment() {
     });
 }
 
+// function departmentBudget() {
+//   inquirer
+//     .prompt([
+//       {
+//         name: "name",
+//         type: "input",
+//         message: "What is the department's name?",
+//         choices: departmentNames(),
+//       },
+//     ]).then((res) => {
+//       connection.query(
+//         "SELECT"
+//       )
+//     })
+// }
+
+
 // ** Role functions **
 function viewRoles() {
   connection.query("SELECT * FROM role;", (err, res) => {
@@ -234,8 +251,9 @@ function runApp() {
                   deleteDepartment();
                   break;
 
-                case "View the total utilized budget of a department":
-                  break;
+                // case "View the total utilized budget of a department":
+                //   departmentBudget();
+                //   break;
 
                 case "Go back":
                   runApp();
