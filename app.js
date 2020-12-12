@@ -110,7 +110,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a role":
-                  deleteRole();  // WIP - assignRole function doesn't work correctly, doesn't display list like I'd like
+                  deleteRole(); // WIP - assignRole function doesn't work correctly, doesn't display list like I'd like
                   break;
 
                 case "Go back":
@@ -148,11 +148,12 @@ const runApp = () => {
                   viewEmplByRole();
                   break;
 
-                case "View employees by manager":
-                  break;
+                // case "View employees by manager":
+                //   viewEmplByManager();
+                //   break;
 
-                case "Update employee managers":
-                  break;
+                // case "Update employee managers":
+                //   break;
 
                 case "Add an employee":
                   addEmployee();
@@ -175,7 +176,6 @@ const runApp = () => {
       }
     });
 };
-
 
 // ==================================================
 // FUNCTIONS TO PULL/EDIT DATA FROM TABLES
@@ -417,10 +417,23 @@ const assignManager = () => {
 };
 
 const viewEmplByRole = () => {
-  connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
-  (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runApp();
-  })
-}
+  connection.query(
+    "SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      runApp();
+    }
+  );
+};
+
+// const viewEmplByManager = () => {
+//   connection.query(
+//     "SELET manager_id, CONCAT (manager.first_name, ' ', manager.last_name) AS manager FROM  ",
+//     (err, res) => {
+//       if (err) throw err;
+//       console.table(res);
+//       runApp();
+//     }
+//   );
+// };
