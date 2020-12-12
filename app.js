@@ -30,7 +30,7 @@ connection.connect(function (err) {
 // ==================================================
 
 // ** Department functions **
-function viewDepartments() {
+const viewDepartments = () => {
   connection.query("SELECT * FROM department;", (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -39,7 +39,7 @@ function viewDepartments() {
 }
 
 // array push wasn't working on this function for some reason, so instead we'll just console.log the department names
-function departmentNames() {
+const departmentNames = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
     for (var i = 0; i < res.length; i++) {
@@ -48,7 +48,7 @@ function departmentNames() {
   });
 }
 
-function addDepartment() {
+const addDepartment = () => {
   // prompt user to enter new department info
   inquirer
     .prompt([
@@ -73,7 +73,7 @@ function addDepartment() {
     });
 }
 
-function deleteDepartment() {
+const deleteDepartment = () => {
   inquirer
     .prompt([
       {
@@ -116,7 +116,7 @@ function deleteDepartment() {
 
 
 // ** Role functions **
-function viewRoles() {
+const viewRoles = () => {
   connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -126,7 +126,7 @@ function viewRoles() {
 
 // empty array to push roles into for addEmployee function
 let roleArr = [];
-function assignRole() {
+const assignRole = () => {
   connection.query("SELECT * FROM role", (err, res) => {
     if (err) throw err;
     for (var i = 0; i < res.length; i++) {
@@ -136,7 +136,7 @@ function assignRole() {
   return roleArr;
 }
 
-function addRole() {
+const addRole = () => {
   // prompt user to enter new role
   inquirer
     .prompt([
@@ -173,8 +173,33 @@ function addRole() {
     });
 }
 
+const deleteRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: "role",
+        type: "list",
+        message: "What is the role?",
+        choices: assignRole(),
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "DELETE FROM role WHERE ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log(`Role deleted!`);
+          runApp();
+        }
+      );
+    });
+}
+
 // ** Employee functions **
-function viewEmployees() {
+const viewEmployees = () => {
   connection.query("SELECT * FROM employee;", (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -182,7 +207,7 @@ function viewEmployees() {
   });
 }
 
-function addEmployee() {
+const addEmployee = () => {
   // prompt user to enter new employee info
   inquirer
     .prompt([
@@ -198,7 +223,7 @@ function addEmployee() {
       },
       {
         name: "role",
-        type: "list",
+        type: "rawlist",
         message: "What is the employees's role?",
         choices: assignRole(),
       },
@@ -227,7 +252,7 @@ function addEmployee() {
 
 // empty arr to push manager names into
 let managersArr = [];
-function assignManager() {
+const assignManager = () => {
   connection.query(
     "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
     (err, res) => {
@@ -243,7 +268,7 @@ function assignManager() {
 // BEGIN WORKING CODE
 // ==================================================
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
-function runApp() {
+const runApp = () => {
   inquirer
     .prompt({
       name: "action",
@@ -308,7 +333,6 @@ function runApp() {
               choices: [
                 "View all roles",
                 "Add a role",
-                "Update a role",
                 "Delete a role",
                 "Go back",
               ],
@@ -324,10 +348,8 @@ function runApp() {
                   addRole();
                   break;
 
-                case "Update a role":
-                  break;
-
                 case "Delete a role":
+                  deleteRole();
                   break;
 
                 case "Go back":
