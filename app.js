@@ -71,7 +71,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a department":
-                  deleteDepartment();
+                  deleteDepartment(); // WIP - viewDepartments function doesn't work correctly
                   break;
 
                 // case "View the total utilized budget of a department":
@@ -110,7 +110,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a role":
-                  deleteRole();
+                  deleteRole();  // WIP - assignRole function doesn't work correctly
                   break;
 
                 case "Go back":
