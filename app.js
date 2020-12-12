@@ -145,6 +145,7 @@ const runApp = () => {
                   break;
 
                 case "View all employees by role":
+                  viewEmplByRole();
                   break;
 
                 case "View employees by manager":
@@ -414,3 +415,12 @@ const assignManager = () => {
   );
   return managersArr;
 };
+
+const viewEmplByRole = () => {
+  connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
+  (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  })
+}
