@@ -38,16 +38,14 @@ function viewDepartments() {
   });
 }
 
-// empty array to push departments into for concatanation
-let departmentArr = [];
+// array push wasn't working on this function for some reason, so instead we'll just console.log the department names
 function departmentNames() {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
     for (var i = 0; i < res.length; i++) {
-      departmentArr.push(res[i].name);
+      console.log(`\n${res[i].name}`);
     }
   });
-  return departmentArr;
 }
 
 function addDepartment() {
@@ -61,7 +59,7 @@ function addDepartment() {
       },
     ])
     .then((res) => {
-      let query = connection.query(
+      connection.query(
         "INSERT INTO department SET ? ",
         {
           name: res.name,
@@ -80,7 +78,7 @@ function deleteDepartment() {
     .prompt([
       {
         name: "name",
-        type: "list",
+        type: "input",
         message: "What is the department's name?",
         choices: departmentNames(),
       },
@@ -93,7 +91,7 @@ function deleteDepartment() {
         },
         (err, res) => {
           if (err) throw err;
-          console.log(`${res.name} deleted from departments!`);
+          console.log(`Department deleted!`);
           runApp();
         }
       );
@@ -159,7 +157,7 @@ function addEmployee() {
       },
     ])
     .then((res) => {
-      let query = connection.query(
+      connection.query(
         "INSERT INTO department SET ? ",
         {
           name: res.name,
