@@ -26,246 +26,7 @@ connection.connect(function (err) {
 });
 
 // ==================================================
-// FUNCTIONS TO PULL/EDIT DATA FROM TABLES
-// ==================================================
-
-// ** Department functions **
-const viewDepartments = () => {
-  connection.query("SELECT * FROM department;", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runApp();
-  });
-}
-
-// array push wasn't working on this function for some reason, so instead we'll just console.log the department names
-const departmentNames = () => {
-  connection.query("SELECT * FROM department", (err, res) => {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      console.log(`\n${res[i].name}`);
-    }
-  });
-}
-
-const addDepartment = () => {
-  // prompt user to enter new department info
-  inquirer
-    .prompt([
-      {
-        name: "name",
-        type: "input",
-        message: "What is the department's name?",
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "INSERT INTO department SET ? ",
-        {
-          name: res.name,
-        },
-        (err) => {
-          if (err) throw err;
-          console.table(res);
-          runApp();
-        }
-      );
-    });
-}
-
-const deleteDepartment = () => {
-  inquirer
-    .prompt([
-      {
-        name: "name",
-        type: "input",
-        message: "What is the department's name?",
-        choices: departmentNames(),
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "DELETE FROM department WHERE ? ",
-        {
-          name: res.name,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.log(`Department deleted!`);
-          runApp();
-        }
-      );
-    });
-}
-
-// function departmentBudget() {
-//   inquirer
-//     .prompt([
-//       {
-//         name: "name",
-//         type: "input",
-//         message: "What is the department's name?",
-//         choices: departmentNames(),
-//       },
-//     ]).then((res) => {
-//       connection.query(
-//         "SELECT"
-//       )
-//     })
-// }
-
-
-// ** Role functions **
-const viewRoles = () => {
-  connection.query("SELECT * FROM role;", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runApp();
-  });
-}
-
-// empty array to push roles into for addEmployee function
-let roleArr = [];
-const assignRole = () => {
-  connection.query("SELECT * FROM role", (err, res) => {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      roleArr.push(res[i].title);
-    }
-  });
-  return roleArr;
-}
-
-const addRole = () => {
-  // prompt user to enter new role
-  inquirer
-    .prompt([
-      {
-        name: "title",
-        type: "input",
-        message: "What is the role's title?",
-      },
-      {
-        name: "salary",
-        type: "input",
-        message: "What is the role's salary?",
-      },
-      {
-        name: "department_id",
-        type: "input",
-        message: "What is the role's department id?",
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "INSERT INTO role SET ? ",
-        {
-          title: res.title,
-          salary: res.salary,
-          department_id: res.department_id,
-        },
-        (err) => {
-          if (err) throw err;
-          console.table(res);
-          runApp();
-        }
-      );
-    });
-}
-
-const deleteRole = () => {
-  inquirer
-    .prompt([
-      {
-        name: "role",
-        type: "list",
-        message: "What is the role?",
-        choices: assignRole(),
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "DELETE FROM role WHERE ? ",
-        {
-          name: res.name,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.log(`Role deleted!`);
-          runApp();
-        }
-      );
-    });
-}
-
-// ** Employee functions **
-const viewEmployees = () => {
-  connection.query("SELECT * FROM employee;", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runApp();
-  });
-}
-
-const addEmployee = () => {
-  // prompt user to enter new employee info
-  inquirer
-    .prompt([
-      {
-        name: "first_name",
-        type: "input",
-        message: "What is the employees's first name?",
-      },
-      {
-        name: "last_name",
-        type: "input",
-        message: "What is the employees's last name?",
-      },
-      {
-        name: "role",
-        type: "rawlist",
-        message: "What is the employees's role?",
-        choices: assignRole(),
-      },
-      {
-        name: "manager_choice",
-        type: "list",
-        message:
-          "Who is the employees's manager? Keep blank if this employee is a manager.",
-        choices: assignManager(),
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "INSERT INTO department SET ? ",
-        {
-          name: res.name,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.table(res);
-          runApp();
-        }
-      );
-    });
-}
-
-// empty arr to push manager names into
-let managersArr = [];
-const assignManager = () => {
-  connection.query(
-    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
-    (err, res) => {
-      if (err) throw err;
-      for (var i = 0; i < res.length; i++) {
-        managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
-      }
-    }
-  );
-  return managersArr;
-}
-// ==================================================
-// BEGIN WORKING CODE
+// BEGIN INQUIRER PROMPTS
 // ==================================================
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
 const runApp = () => {
@@ -412,4 +173,244 @@ const runApp = () => {
           return;
       }
     });
-}
+};
+
+
+// ==================================================
+// FUNCTIONS TO PULL/EDIT DATA FROM TABLES
+// ==================================================
+
+// ** Department functions **
+const viewDepartments = () => {
+  connection.query("SELECT * FROM department;", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  });
+};
+
+// array push wasn't working on this function for some reason, so instead we'll just console.log the department names
+const departmentNames = () => {
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      console.log(`\n${res[i].name}`);
+    }
+  });
+};
+
+const addDepartment = () => {
+  // prompt user to enter new department info
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        type: "input",
+        message: "What is the department's name?",
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "INSERT INTO department SET ? ",
+        {
+          name: res.name,
+        },
+        (err) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+};
+
+const deleteDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        type: "input",
+        message: "What is the department's name?",
+        choices: departmentNames(),
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "DELETE FROM department WHERE ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log(`Department deleted!`);
+          runApp();
+        }
+      );
+    });
+};
+
+// function departmentBudget() {
+//   inquirer
+//     .prompt([
+//       {
+//         name: "name",
+//         type: "input",
+//         message: "What is the department's name?",
+//         choices: departmentNames(),
+//       },
+//     ]).then((res) => {
+//       connection.query(
+//         "SELECT"
+//       )
+//     })
+// }
+
+// ** Role functions **
+const viewRoles = () => {
+  connection.query("SELECT * FROM role;", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  });
+};
+
+// empty array to push roles into for addEmployee function
+let roleArr = [];
+const assignRole = () => {
+  connection.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      roleArr.push(res[i].title);
+    }
+  });
+  return roleArr;
+};
+
+const addRole = () => {
+  // prompt user to enter new role
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "What is the role's title?",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "What is the role's salary?",
+      },
+      {
+        name: "department_id",
+        type: "input",
+        message: "What is the role's department id?",
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "INSERT INTO role SET ? ",
+        {
+          title: res.title,
+          salary: res.salary,
+          department_id: res.department_id,
+        },
+        (err) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+};
+
+const deleteRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: "role",
+        type: "list",
+        message: "What is the role?",
+        choices: assignRole(),
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "DELETE FROM role WHERE ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log(`Role deleted!`);
+          runApp();
+        }
+      );
+    });
+};
+
+// ** Employee functions **
+const viewEmployees = () => {
+  connection.query("SELECT * FROM employee;", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runApp();
+  });
+};
+
+const addEmployee = () => {
+  // prompt user to enter new employee info
+  inquirer
+    .prompt([
+      {
+        name: "first_name",
+        type: "input",
+        message: "What is the employees's first name?",
+      },
+      {
+        name: "last_name",
+        type: "input",
+        message: "What is the employees's last name?",
+      },
+      {
+        name: "role",
+        type: "rawlist",
+        message: "What is the employees's role?",
+        choices: assignRole(),
+      },
+      {
+        name: "manager_choice",
+        type: "list",
+        message:
+          "Who is the employees's manager? Keep blank if this employee is a manager.",
+        choices: assignManager(),
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "INSERT INTO department SET ? ",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+};
+
+// empty arr to push manager names into
+let managersArr = [];
+const assignManager = () => {
+  connection.query(
+    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
+    (err, res) => {
+      if (err) throw err;
+      for (var i = 0; i < res.length; i++) {
+        managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
+      }
+    }
+  );
+  return managersArr;
+};
