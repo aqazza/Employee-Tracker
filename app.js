@@ -72,7 +72,8 @@ const runApp = () => {
 
                 case "Delete a department":
                   deleteDepartment();
-
+                  break;
+                  
                 // case "View the total utilized budget of a department":
                 //   departmentBudget();
                 //   break;
@@ -109,7 +110,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a role":
-                  deleteRole(); 
+                  deleteRole();
                   break;
 
                 case "Go back":
@@ -218,7 +219,6 @@ const addDepartment = () => {
 const deleteDepartment = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
-    console.log(res);
     inquirer
       .prompt([
         {
@@ -275,10 +275,9 @@ const viewRoles = () => {
   });
 };
 
-const assignRole = () => {
+const assignRoles = () => {
   connection.query("SELECT * FROM role", (err, res) => {
     if (err) throw err;
-    console.log(res);
     inquirer.prompt([
       {
         name: "name",
@@ -334,7 +333,7 @@ const addRole = () => {
 };
 
 const deleteRole = () => {
-  assignRole().then((res) => {
+  assignRoles().then((res) => {
     connection.query(
       "DELETE FROM role WHERE ? ",
       {
@@ -374,9 +373,9 @@ const addEmployee = () => {
       },
       {
         name: "role",
-        type: "rawlist",
+        type: "list",
         message: "What is the employees's role?",
-        choices: assignRole(),
+        choices: assignRoles()
       },
       {
         name: "manager_choice",
@@ -451,7 +450,7 @@ const updateEmployee = () => {
         name: "new_role",
         type: "input",
         message: "What is the employee's new role title?",
-        choices: assignRole(),
+        choices: assignRoles(),
       },
     ])
     .then((res) => {
