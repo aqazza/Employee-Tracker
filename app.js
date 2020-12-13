@@ -71,8 +71,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a department":
-                  deleteDepartment(); // WIP - viewDepartments function doesn't work correctly, doesn't display list like I'd like
-                  break;
+                  deleteDepartment();
 
                 // case "View the total utilized budget of a department":
                 //   departmentBudget();
@@ -110,7 +109,7 @@ const runApp = () => {
                   break;
 
                 case "Delete a role":
-                  deleteRole(); // WIP - assignRole function doesn't work correctly, doesn't display list like I'd like
+                  deleteRole(); 
                   break;
 
                 case "Go back":
@@ -188,16 +187,6 @@ const viewDepartments = () => {
     if (err) throw err;
     console.table(res);
     runApp();
-  });
-};
-
-// array push wasn't working on this function for some reason, so instead we'll just console.log the department names
-const departmentNames = () => {
-  connection.query("SELECT * FROM department", (err, res) => {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      console.log(`\n${res[i].name}`);
-    }
   });
 };
 
@@ -286,16 +275,25 @@ const viewRoles = () => {
   });
 };
 
-// empty array to push roles into for addEmployee function
-let roleArr = [];
 const assignRole = () => {
   connection.query("SELECT * FROM role", (err, res) => {
     if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      roleArr.push(res[i].title);
-    }
+    console.log(res);
+    inquirer.prompt([
+      {
+        name: "name",
+        type: "list",
+        message: "Please select a role",
+        choices: function () {
+          let roleArr = [];
+          for (var i = 0; i < res.length; i++) {
+            roleArr.push(res[i].title);
+          }
+          return roleArr;
+        },
+      },
+    ]);
   });
-  return roleArr;
 };
 
 const addRole = () => {
@@ -336,28 +334,19 @@ const addRole = () => {
 };
 
 const deleteRole = () => {
-  inquirer
-    .prompt([
+  assignRole().then((res) => {
+    connection.query(
+      "DELETE FROM role WHERE ? ",
       {
-        name: "role",
-        type: "list",
-        message: "What is the role?",
-        choices: assignRole(),
+        name: res.name,
       },
-    ])
-    .then((res) => {
-      connection.query(
-        "DELETE FROM role WHERE ? ",
-        {
-          name: res.name,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.log(`Role deleted!`);
-          runApp();
-        }
-      );
-    });
+      (err, res) => {
+        if (err) throw err;
+        console.log(`Role deleted!`);
+        runApp();
+      }
+    );
+  });
 };
 
 // ** Employee functions **
