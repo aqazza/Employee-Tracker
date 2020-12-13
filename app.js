@@ -73,7 +73,7 @@ const runApp = () => {
                 case "Delete a department":
                   deleteDepartment();
                   break;
-                  
+
                 // case "View the total utilized budget of a department":
                 //   departmentBudget();
                 //   break;
@@ -109,9 +109,9 @@ const runApp = () => {
                   addRole();
                   break;
 
-                case "Delete a role":
-                  deleteRole();
-                  break;
+                // case "Delete a role":
+                //   deleteRole();
+                //   break;
 
                 case "Go back":
                   runApp();
@@ -332,21 +332,39 @@ const addRole = () => {
     });
 };
 
-const deleteRole = () => {
-  assignRoles().then((res) => {
-    connection.query(
-      "DELETE FROM role WHERE ? ",
-      {
-        name: res.name,
-      },
-      (err, res) => {
-        if (err) throw err;
-        console.log(`Role deleted!`);
-        runApp();
-      }
-    );
-  });
-};
+// const deleteRole = () => {
+//   connection.query("SELECT * FROM role", (err, res) => {
+//     if (err) throw err;
+//     inquirer
+//       .prompt([
+//         {
+//           name: "name",
+//           type: "list",
+//           message: "Please select a role to delete",
+//           choices: function () {
+//             let roleArr = [];
+//             for (var i = 0; i < res.length; i++) {
+//               roleArr.push(res[i].name);
+//             }
+//             return roleArr;
+//           },
+//         },
+//       ])
+//       .then((res) => {
+//         connection.query(
+//           "DELETE FROM role WHERE ? ",
+//           {
+//             name: res.name,
+//           },
+//           (err, res) => {
+//             if (err) throw err;
+//             console.log(`${res.name} deleted!`);
+//             runApp();
+//           }
+//         );
+//       });
+//   });
+// };
 
 // ** Employee functions **
 const viewEmployees = () => {
@@ -375,7 +393,7 @@ const addEmployee = () => {
         name: "role",
         type: "list",
         message: "What is the employees's role?",
-        choices: assignRoles()
+        choices: assignRoles(),
       },
       {
         name: "manager_choice",
