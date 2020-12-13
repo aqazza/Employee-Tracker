@@ -159,7 +159,7 @@ const runApp = () => {
                   addEmployee();
                   break;
 
-                case "Update an employee":
+                case "Update an employee's role":
                   updateEmployee();
                   break;
 
@@ -227,28 +227,38 @@ const addDepartment = () => {
 };
 
 const deleteDepartment = () => {
-  inquirer
-    .prompt([
-      {
-        name: "name",
-        type: "input",
-        message: "What is the department's name?",
-        choices: departmentNames(),
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "DELETE FROM department WHERE ? ",
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    inquirer
+      .prompt([
         {
-          name: res.name,
+          name: "name",
+          type: "list",
+          message: "What is the department's name?",
+          choices: function () {
+            let departmentArr = [];
+            for (var i = 0; i < res.length; i++) {
+              departmentArr.push(res[i].name);
+            }
+            return departmentArr;
+          },
         },
-        (err, res) => {
-          if (err) throw err;
-          console.log(`Department deleted!`);
-          runApp();
-        }
-      );
-    });
+      ])
+      .then((res) => {
+        connection.query(
+          "DELETE FROM department WHERE ? ",
+          {
+            name: res.name,
+          },
+          (err, res) => {
+            if (err) throw err;
+            console.log(`Department deleted!`);
+            runApp();
+          }
+        );
+      });
+  });
 };
 
 // function departmentBudget() {
@@ -443,39 +453,57 @@ const updateEmployee = () => {
   inquirer
     .prompt([
       {
-        name: "first_name",
-        type: "input",
-        message: "What is the employee's name?",
+        name: "last_name",
+        type: "list",
+        message: "What is the employee's last name?",
         choices: employeeNames(),
       },
+      {
+        name: "new_role",
+        type: "input",
+        message: "What is the employee's new role title?",
+        choices: assignRole(),
+      },
     ])
-    .then((inquirer.prompt))
-
-
-
-
-    // .then((res) => {
-    //   connection.query(
-    //     "UPDATE employee SET ? WHERE ? ",
-    //     {
-    //       first_name: res.name,
-    //     },
-    //     (err, res) => {
-    //       if (err) throw err;
-    //       console.table(res);
-    //       runApp();
-    //     }
-    //   );
-    // });
+    .then((res) => {
+      connection.query(
+        "UPDATE employee SET WHERE ?",
+        {
+          last_name: res.last_name,
+        },
+        {
+          role_id: res.new_role,
+        },
+        (err) => {
+          if (err) throw err;
+          console.table(res);
+          runApp();
+        }
+      );
+    });
 };
+
+// .then((res) => {
+//   connection.query(
+//     "UPDATE employee SET ? WHERE ? ",
+//     {
+//       first_name: res.name,
+//     },
+//     (err, res) => {
+//       if (err) throw err;
+//       console.table(res);
+//       runApp();
+//     }
+//   );
+// });
 
 // empty arr to push employee names into
 let employeeArr = [];
 const employeeNames = () => {
-  connection.query("SELECT first_name, last_name FROM employee", (err, res) => {
+  connection.query("SELECT last_name FROM employee", (err, res) => {
     if (err) throw err;
     for (var i = 0; i < res.length; i++) {
-      employeeArr.push(`${res[i].first_name} ${res[i].last_name}`);
+      employeeArr.push(`${res[i].last_name}`);
     }
   });
   return employeeArr;
