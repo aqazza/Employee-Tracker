@@ -100,7 +100,7 @@ const runApp = () => {
               choices: [
                 "View all roles",
                 "Add a role",
-                "Delete a role",
+                // "Delete a role",
                 "Go back",
               ],
               // *** role options logic
