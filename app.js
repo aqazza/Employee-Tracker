@@ -489,19 +489,16 @@ const updateEmployee = () => {
           },
         ])
         .then((val) => {
-          try {
-            connection.query(
-              "UPDATE employee SET role_id=? WHERE employee.last_name=?",
-              {
-                last_name: val.employee_choice,
-              },
-              {
-                role_id: val.role_id,
-              }
-            );
-          } catch (err) {
-            console.log(err);
-          }
+          console.log(findRole().indexOf(val.role_id));
+          connection.query(
+            "UPDATE employee SET role_id=? WHERE employee.last_name=?",
+            [val.employee_choice, roleArr.indexOf(val.role_id)],
+            (err, res) => {
+              if (err) throw err;
+              console.log("Employee updated!");
+              runApp();
+            }
+          );
         });
     }
   );
