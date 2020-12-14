@@ -405,12 +405,17 @@ const addEmployee = () => {
     ])
     .then((res) => {
       connection.query(
-        "INSERT INTO employee SET first_name=? last_name=? role_id=? manager_id=?;",
+        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);",
         // for roles and managers, we get the index value of their appropriate arr and add 1 to get the actual id number
-        [res.first_name, res.last_name, roleArr.indexOf(res.role + 1), managersArr.indexOf(res.manager_choice + 1)],
+        [
+          res.first_name,
+          res.last_name,
+          roleArr.indexOf(res.role) + 1,
+          managersArr.indexOf(res.manager_choice) + 1,
+        ],
         (err, res) => {
           if (err) throw err;
-          console.table(res);
+          console.log(`\nEmployee added!\n`);
           runApp();
         }
       );
@@ -485,10 +490,10 @@ const updateEmployee = () => {
         ])
         .then((val) => {
           connection.query(
-            // we need to join the string of val.role_id to the titles in the role db, getting the role unique id, 
+            // we need to join the string of val.role_id to the titles in the role db, getting the role unique id,
             // and then returning that id to the employee db to update the employee's role
-            // 
-            // We should be able to do this by matching the string to the role title, grabbing the unique id, 
+            //
+            // We should be able to do this by matching the string to the role title, grabbing the unique id,
             // then pushing that to the employee db as the role value
             `UPDATE employee 
             SET role_id = (SELECT id FROM role WHERE title=? )
