@@ -26,6 +26,12 @@ connection.connect(function (err) {
 });
 
 // ==================================================
+// ARRAYS TO HOLD CONST VALUES
+// ==================================================
+
+let roleArr = [];
+
+// ==================================================
 // BEGIN INQUIRER PROMPTS
 // ==================================================
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
@@ -163,8 +169,8 @@ const runApp = () => {
                   updateEmployee();
                   break;
 
-                case "Delete an employee":
-                  break;
+                // case "Delete an employee":
+                //   break;
 
                 case "Go back":
                   runApp();
@@ -477,10 +483,9 @@ const updateEmployee = () => {
           },
           {
             name: "role_id",
-            type: "list",
+            type: "rawlist",
             message: "What is the employee's new title?",
             choices: function () {
-              let roleArr = [];
               for (var i = 0; i < res.length; i++) {
                 roleArr.push(res[i].Title);
               }
@@ -489,10 +494,16 @@ const updateEmployee = () => {
           },
         ])
         .then((val) => {
-          console.log(findRole().indexOf(val.role_id));
           connection.query(
-            "UPDATE employee SET role_id=? WHERE employee.last_name=?",
-            [val.employee_choice, roleArr.indexOf(val.role_id)],
+            // we need to join the string of val.role_id to the titles in the role db, getting the role unique id, 
+            // and then returning that id to the employee db to update the employee's role
+            // 
+            // We should be able to do this by matching the string to the role title, grabbing the unique id, 
+            // then pushing that to the employee db as the role value
+            `UPDATE employee 
+            SET role_id = (SELECT id FROM role WHERE title=? )
+            WHERE last_name=?`,
+            [val.role_id, val.employee_choice],
             (err, res) => {
               if (err) throw err;
               console.log("Employee updated!");
