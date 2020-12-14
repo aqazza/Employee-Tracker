@@ -132,7 +132,7 @@ const runApp = () => {
                 "View employees by manager",
                 "Update employee managers",
                 "Add an employee",
-                "Update an employee",
+                "Update an employee's role",
                 "Delete an employee",
                 "Go back",
               ],
@@ -455,62 +455,54 @@ const viewEmplByRole = () => {
 //   );
 // };
 
+// for updateEmployee() we will modify viewEmplByRole()
 const updateEmployee = () => {
-  inquirer
-    .prompt([
-      {
-        name: "last_name",
-        type: "list",
-        message: "What is the employee's last name?",
-        choices: employeeNames(),
-      },
-      {
-        name: "new_role",
-        type: "input",
-        message: "What is the employee's new role title?",
-        choices: assignRoles(),
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "UPDATE employee SET WHERE ?",
-        {
-          last_name: res.last_name,
-        },
-        {
-          role_id: res.new_role,
-        },
-        (err) => {
-          if (err) throw err;
-          console.table(res);
-          runApp();
-        }
-      );
-    });
-};
-
-// .then((res) => {
-//   connection.query(
-//     "UPDATE employee SET ? WHERE ? ",
-//     {
-//       first_name: res.name,
-//     },
-//     (err, res) => {
-//       if (err) throw err;
-//       console.table(res);
-//       runApp();
-//     }
-//   );
-// });
-
-// empty arr to push employee names into
-let employeeArr = [];
-const employeeNames = () => {
-  connection.query("SELECT last_name FROM employee", (err, res) => {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      employeeArr.push(`${res[i].last_name}`);
+  connection.query(
+    "SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
+    (err, res) => {
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            name: "employee_choice",
+            type: "list",
+            message: "Which employee would you like to update?",
+            choices: function () {
+              let nameArr = [];
+              for (var i = 0; i < res.length; i++) {
+                nameArr.push(`${res[i].last_name}`);
+              }
+              return nameArr;
+            },
+          },
+          {
+            name: "role_id",
+            type: "list",
+            message: "What is the employee's new title?",
+            choices: function () {
+              let roleArr = [];
+              for (var i = 0; i < res.length; i++) {
+                roleArr.push(res[i].Title);
+              }
+              return roleArr;
+            },
+          },
+        ])
+        .then((val) => {
+          try {
+            connection.query(
+              "UPDATE employee SET role_id=? WHERE employee.last_name=?",
+              {
+                last_name: val.employee_choice,
+              },
+              {
+                role_id: val.role_id,
+              }
+            );
+          } catch (err) {
+            console.log(err);
+          }
+        });
     }
-  });
-  return employeeArr;
+  );
 };
