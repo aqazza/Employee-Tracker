@@ -30,12 +30,16 @@ connection.connect(function (err) {
 // ==================================================
 
 let roleArr = [];
+let managersArr = [];
 
 // ==================================================
 // BEGIN INQUIRER PROMPTS
 // ==================================================
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
 const runApp = () => {
+  // first get all current roles
+  getRoles();
+  getManagers();
   inquirer
     .prompt({
       name: "action",
@@ -61,7 +65,7 @@ const runApp = () => {
                 "View all departments",
                 "Add a department",
                 "Delete a department",
-                "View the total utilized budget of a department",
+                // "View the total utilized budget of a department",
                 "Go back",
               ],
               // *** department options logic
@@ -135,8 +139,8 @@ const runApp = () => {
               choices: [
                 "View all employees",
                 "View all employees by role",
-                "View employees by manager",
-                "Update employee managers",
+                // "View employees by manager",
+                // "Update employee managers",
                 "Add an employee",
                 "Update an employee's role",
                 "Delete an employee",
@@ -248,7 +252,7 @@ const deleteDepartment = () => {
           },
           (err, res) => {
             if (err) throw err;
-            console.log(`Department deleted!`);
+            console.log(`\nDepartment deleted!\n`);
             runApp();
           }
         );
@@ -273,6 +277,7 @@ const deleteDepartment = () => {
 // }
 
 // ** Role functions **
+// view roles in a table
 const viewRoles = () => {
   connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
@@ -280,24 +285,13 @@ const viewRoles = () => {
     runApp();
   });
 };
-
-const assignRoles = () => {
-  connection.query("SELECT * FROM role", (err, res) => {
+// push roles into the roleArr
+const getRoles = () => {
+  connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
-    inquirer.prompt([
-      {
-        name: "name",
-        type: "list",
-        message: "Please select a role",
-        choices: function () {
-          let roleArr = [];
-          for (var i = 0; i < res.length; i++) {
-            roleArr.push(res[i].title);
-          }
-          return roleArr;
-        },
-      },
-    ]);
+    for (var i = 0; i < res.length; i++) {
+      roleArr.push(res[i].title);
+    }
   });
 };
 
@@ -399,22 +393,21 @@ const addEmployee = () => {
         name: "role",
         type: "list",
         message: "What is the employees's role?",
-        choices: assignRoles(),
+        choices: roleArr,
       },
       {
         name: "manager_choice",
         type: "list",
         message:
           "Who is the employees's manager? Keep blank if this employee is a manager.",
-        choices: assignManager(),
+        choices: managersArr,
       },
     ])
     .then((res) => {
       connection.query(
-        "INSERT INTO department SET ? ",
-        {
-          name: res.name,
-        },
+        "INSERT INTO employee SET first_name=? last_name=? role_id=? manager_id=?;",
+        // for roles and managers, we get the index value of their appropriate arr and add 1 to get the actual id number
+        [res.first_name, res.last_name, roleArr.indexOf(res.role + 1), managersArr.indexOf(res.manager_choice + 1)],
         (err, res) => {
           if (err) throw err;
           console.table(res);
@@ -424,9 +417,7 @@ const addEmployee = () => {
     });
 };
 
-// empty arr to push manager names into
-let managersArr = [];
-const assignManager = () => {
+const getManagers = () => {
   connection.query(
     "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
     (err, res) => {
@@ -436,7 +427,6 @@ const assignManager = () => {
       }
     }
   );
-  return managersArr;
 };
 
 const viewEmplByRole = () => {
