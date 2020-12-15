@@ -143,7 +143,7 @@ const runApp = () => {
                 // "Update employee managers",
                 "Add an employee",
                 "Update an employee's role",
-                "Delete an employee",
+                // "Delete an employee",
                 "Go back",
               ],
               // *** Employee options logic
