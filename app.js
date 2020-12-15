@@ -196,6 +196,7 @@ const runApp = () => {
 const viewDepartments = () => {
   connection.query("SELECT * FROM department;", (err, res) => {
     if (err) throw err;
+    console.log(`\nDepartments:\n`)
     console.table(res);
     runApp();
   });
@@ -219,6 +220,7 @@ const addDepartment = () => {
         },
         (err) => {
           if (err) throw err;
+          console.log(`\nNew Department added! Values are:\n`)
           console.table(res);
           runApp();
         }
@@ -281,6 +283,7 @@ const deleteDepartment = () => {
 const viewRoles = () => {
   connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
+    console.log(`\nRoles:\n`)
     console.table(res);
     runApp();
   });
@@ -325,6 +328,7 @@ const addRole = () => {
         },
         (err) => {
           if (err) throw err;
+          console.log(`\nNew Role added! Values are:\n`)
           console.table(res);
           runApp();
         }
@@ -370,6 +374,7 @@ const addRole = () => {
 const viewEmployees = () => {
   connection.query("SELECT * FROM employee;", (err, res) => {
     if (err) throw err;
+    console.log(`\nEmployees:\n`)
     console.table(res);
     runApp();
   });
@@ -439,6 +444,7 @@ const viewEmplByRole = () => {
     "SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
     (err, res) => {
       if (err) throw err;
+      console.log(`\nEmployees by Role:\n`)
       console.table(res);
       runApp();
     }
@@ -501,7 +507,7 @@ const updateEmployee = () => {
             [val.role_id, val.employee_choice],
             (err, res) => {
               if (err) throw err;
-              console.log("Employee updated!");
+              console.log(`\nEmployee updated!\n`);
               runApp();
             }
           );
