@@ -31,15 +31,20 @@ connection.connect(function (err) {
 
 let roleArr = [];
 let managersArr = [];
+let employeeArr = [];
+let departmentArr = [];
 
 // ==================================================
 // BEGIN INQUIRER PROMPTS
 // ==================================================
 // runApp() returns inquirer prompts to ask what the user would like to do, and then runs functions based on user input
 const runApp = () => {
-  // first get all current roles
+  // update arrays with current data
+  getEmployees();
   getRoles();
   getManagers();
+  getDepts();
+  // call inquirer prompts
   inquirer
     .prompt({
       name: "action",
@@ -139,7 +144,7 @@ const runApp = () => {
               choices: [
                 "View all employees",
                 "View all employees by role",
-                // "View employees by manager",
+                "View employees by manager",
                 // "Update employee managers",
                 "Add an employee",
                 "Update an employee's role",
@@ -158,9 +163,9 @@ const runApp = () => {
                   viewEmplByRole();
                   break;
 
-                // case "View employees by manager":
-                //   viewEmplByManager();
-                //   break;
+                case "View employees by manager":
+                  viewEmplByManager();
+                  break;
 
                 // case "Update employee managers":
                 //   break;
@@ -193,10 +198,25 @@ const runApp = () => {
 // ==================================================
 
 // ** Department functions **
+const getDepts = () => {
+  connection.query(
+    "SELECT * FROM department",
+    (err, res) => {
+      if (err) throw err;
+      res.forEach((department) => {
+        departmentArr.push({
+          name: `${department.name}`,
+          value: department.id,
+        });
+      });
+    }
+  );
+};
+
 const viewDepartments = () => {
   connection.query("SELECT * FROM department;", (err, res) => {
     if (err) throw err;
-    console.log(`\nDepartments:\n`)
+    console.log(`\nDepartments:\n`);
     console.table(res);
     runApp();
   });
@@ -220,7 +240,7 @@ const addDepartment = () => {
         },
         (err) => {
           if (err) throw err;
-          console.log(`\nNew Department added! Values are:\n`)
+          console.log(`\nNew Department added! Values are:\n`);
           console.table(res);
           runApp();
         }
@@ -237,13 +257,7 @@ const deleteDepartment = () => {
           name: "name",
           type: "list",
           message: "What is the department's name?",
-          choices: function () {
-            let departmentArr = [];
-            for (var i = 0; i < res.length; i++) {
-              departmentArr.push(res[i].name);
-            }
-            return departmentArr;
-          },
+          choices: departmentArr,
         },
       ])
       .then((res) => {
@@ -283,7 +297,7 @@ const deleteDepartment = () => {
 const viewRoles = () => {
   connection.query("SELECT * FROM role;", (err, res) => {
     if (err) throw err;
-    console.log(`\nRoles:\n`)
+    console.log(`\nRoles:\n`);
     console.table(res);
     runApp();
   });
@@ -314,8 +328,9 @@ const addRole = () => {
       },
       {
         name: "department_id",
-        type: "input",
-        message: "What is the role's department id?",
+        type: "list",
+        message: "What is the role's department?",
+        choices: departmentArr,
       },
     ])
     .then((res) => {
@@ -328,7 +343,7 @@ const addRole = () => {
         },
         (err) => {
           if (err) throw err;
-          console.log(`\nNew Role added! Values are:\n`)
+          console.log(`\nNew Role added! Values are:\n`);
           console.table(res);
           runApp();
         }
@@ -336,45 +351,45 @@ const addRole = () => {
     });
 };
 
-// const deleteRole = () => {
-//   connection.query("SELECT * FROM role", (err, res) => {
-//     if (err) throw err;
-//     inquirer
-//       .prompt([
-//         {
-//           name: "name",
-//           type: "list",
-//           message: "Please select a role to delete",
-//           choices: function () {
-//             let roleArr = [];
-//             for (var i = 0; i < res.length; i++) {
-//               roleArr.push(res[i].name);
-//             }
-//             return roleArr;
-//           },
-//         },
-//       ])
-//       .then((res) => {
-//         connection.query(
-//           "DELETE FROM role WHERE ? ",
-//           {
-//             name: res.name,
-//           },
-//           (err, res) => {
-//             if (err) throw err;
-//             console.log(`${res.name} deleted!`);
-//             runApp();
-//           }
-//         );
-//       });
-//   });
-// };
+const deleteRole = () => {
+  connection.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "name",
+          type: "list",
+          message: "Please select a role to delete",
+          choices: function () {
+            let roleArr = [];
+            for (var i = 0; i < res.length; i++) {
+              roleArr.push(res[i].name);
+            }
+            return roleArr;
+          },
+        },
+      ])
+      .then((res) => {
+        connection.query(
+          "DELETE FROM role WHERE ? ",
+          {
+            name: res.name,
+          },
+          (err, res) => {
+            if (err) throw err;
+            console.log(`${res.name} deleted!`);
+            runApp();
+          }
+        );
+      });
+  });
+};
 
 // ** Employee functions **
 const viewEmployees = () => {
   connection.query("SELECT * FROM employee;", (err, res) => {
     if (err) throw err;
-    console.log(`\nEmployees:\n`)
+    console.log(`\nEmployees:\n`);
     console.table(res);
     runApp();
   });
@@ -429,12 +444,30 @@ const addEmployee = () => {
 
 const getManagers = () => {
   connection.query(
-    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
+    "SELECT first_name, last_name, id FROM employee WHERE manager_id IS NULL",
     (err, res) => {
       if (err) throw err;
-      for (var i = 0; i < res.length; i++) {
-        managersArr.push(`${res[i].first_name} ${res[i].last_name}`);
-      }
+      res.forEach((manager) => {
+        managersArr.push({
+          name: `${manager.first_name} ${manager.last_name}`,
+          value: manager.id,
+        });
+      });
+    }
+  );
+};
+
+const getEmployees = () => {
+  connection.query(
+    "SELECT first_name, last_name, id FROM employee WHERE manager_id IS NOT NULL",
+    (err, res) => {
+      if (err) throw err;
+      res.forEach((employee) => {
+        employeeArr.push({
+          name: `${employeeArr.first_name} ${employeeArr.last_name}`,
+          value: employeeArr.id,
+        });
+      });
     }
   );
 };
@@ -444,23 +477,37 @@ const viewEmplByRole = () => {
     "SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
     (err, res) => {
       if (err) throw err;
-      console.log(`\nEmployees by Role:\n`)
+      console.log(`\nEmployees by Role:\n`);
       console.table(res);
       runApp();
     }
   );
 };
 
-// const viewEmplByManager = () => {
-//   connection.query(
-//     "SELET manager_id, CONCAT (manager.first_name, ' ', manager.last_name) AS manager FROM  ",
-//     (err, res) => {
-//       if (err) throw err;
-//       console.table(res);
-//       runApp();
-//     }
-//   );
-// };
+const viewEmplByManager = () => {
+  getManagers();
+  inquirer
+    .prompt([
+      {
+        name: "manager_choice",
+        type: "list",
+        message: "Which manager?",
+        choices: managersArr,
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "SELECT employee.first_name, employee.last_name FROM employee WHERE manager_id=? ",
+        [res.manager_choice],
+        (err, res) => {
+          if (err) throw err;
+          console.log(`\nEmployees by ${res.manager_choice}:\n`);
+          console.table(res);
+          runApp();
+        }
+      );
+    });
+};
 
 // for updateEmployee() we will modify viewEmplByRole()
 const updateEmployee = () => {
@@ -474,14 +521,10 @@ const updateEmployee = () => {
             name: "employee_choice",
             type: "list",
             message: "Which employee would you like to update?",
-            choices: function () {
-              let nameArr = [];
-              for (var i = 0; i < res.length; i++) {
-                nameArr.push(`${res[i].last_name}`);
-              }
-              return nameArr;
-            },
+            choices: employeeArr,
           },
+
+
           {
             name: "role_id",
             type: "rawlist",
