@@ -1,6 +1,9 @@
 const { prompt } = require("inquirer");
 const db = require("./db/connection");
-const { viewAllDepartments, addDepartment, removeDepartment, } = require("./db/departments");
+
+const { viewAllDepartments, addDepartment } = require("./db/departments");
+const { viewAllEmployees, AddEmployee, UpdateEmployeeRole } = require("./db/employees");
+const { viewAllRoles, AddRole } = require("./db/role");
 const start = async () => {
   console.log("Welcome to the Employee Manager!");
   const { choice } = await prompt([
@@ -16,9 +19,9 @@ const start = async () => {
         "Add a role",
         "Add an employee",
         "Update an employee role",
-        "Delete a Department",
-        "Remove an Employee",
-        "Remove a Role",
+        // "Delete a Department",
+        // "Remove an Employee",
+        // "Remove a Role",
         "Exit",
       ],
     },
@@ -46,13 +49,13 @@ const start = async () => {
       break;
 
     case "Add a role":
-      const AddRole = await AddRole();
-      console.table(AddRole);
+      const newRole = await AddRole();
+      console.table(newRole);
       break;
 
     case "Add an employee":
-      const AddEmployee = await AddEmployee();
-      console.table(AddEmployee);
+      const addEmployee = await AddEmployee();
+      console.table(addEmployee);
       break;
 
     case "Update an employee role":
@@ -60,18 +63,18 @@ const start = async () => {
       console.table(newEmployeeRole);
       break;
 
-    case "Remove an Employee":
-      const removedEmployee = await removeEmployee();
-      console.table(removedEmployee);
-      break;
-    case "Delete a Department":
-      const removedDepartment = await removeDepartment();
-      console.table(removedDepartment);
-      break;
-    case "Delete a Role":
-      const removeRole = await removeRole();
-      console.table(removeRole);
-      break;
+    // case "Remove an Employee":
+    //   const removedEmployee = await removeEmployee();
+    //   console.table(removedEmployee);
+    //   break;
+    // case "Delete a Department":
+    //   const removedDepartment = await removeDepartment();
+    //   console.table(removedDepartment);
+    //   break;
+    // case "Delete a Role":
+    //   const removeRole = await removeRole();
+    //   console.table(removeRole);
+    //   break;
 
     case "Exit":
       const Exit = await Exit;

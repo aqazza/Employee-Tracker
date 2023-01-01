@@ -31,32 +31,29 @@ async function addDepartment(){
         console.log (err)
 }
 }
-async function removeDepartment(){
-    try {
-        // const viewAllDepartments = await viewAllDepartments()
-        const {
-            name,
-        } = await inquirer.prompt([
-            {
-                type: 'input',
-                name: 'name',
-                message: 'What is the department you would like to remove?',
-                choices: ['techs', 'mechanics']
-                // viewAllDepartments.map((departments) => {
-                //     return departments.name
-                    //{
-                //                             name: departments.name,
-                //                             value: departments.id
-                // }
-            // }),
-        }
-        ])
-        await db.query(`DELETE FROM department WHERE name = "${name}"`)
-        const departmentList = await viewAllDepartments();
-        return departmentList
+// async function removeDepartment(){
+//     try {
+//         const {
+//             id,
+//         } = await inquirer.prompt([
+//             {
+//                 type: 'list',
+//                 name: 'id',
+//                 message: 'What is the department you would like to remove?',
+//                 choices: departmentList.map((d) => {
+//                     return {
+//                       name: d.name,
+//                       value: d.id,
+//                     };
+//                   }),
+//                 },
+//               ]);
+//         await db.query(`DELETE FROM department WHERE id = "${id}"`)
+//         const departmentList = await viewAllDepartments();
+//         return departmentList
     
-}catch (err){
-    console.log (err)
-}
-}
-module.exports = { viewAllDepartments, addDepartment, removeDepartment }
+// }catch (err){
+//     console.log (err)
+// }
+// }
+module.exports = { viewAllDepartments, addDepartment }
