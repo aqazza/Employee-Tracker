@@ -26,7 +26,7 @@ async function AddRole() {
         type: "list",
         name: "department_id",
         message: "Select the department",
-        choices: department_id.map((department) => {
+        choices: department.map((department) => {
           return {
             name: department.name,
             value: department.id,

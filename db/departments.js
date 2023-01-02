@@ -1,6 +1,5 @@
 const db = require("./connection");
 const inquirer = require("inquirer");
-const { default: Choices } = require("inquirer/lib/objects/choices");
 
 async function viewAllDepartments() {
     try {

@@ -3,7 +3,7 @@ const db = require("./db/connection");
 
 const { viewAllDepartments, addDepartment } = require("./db/departments");
 const { viewAllEmployees, AddEmployee, UpdateEmployeeRole } = require("./db/employees");
-const { viewAllRoles, AddRole } = require("./db/role");
+const { viewRoles, AddRole } = require("./db/role");
 const start = async () => {
   console.log("Welcome to the Employee Manager!");
   const { choice } = await prompt([
@@ -34,7 +34,7 @@ const start = async () => {
       break;
 
     case "View all roles":
-      const roles = await viewAllRoles();
+      const roles = await viewRoles();
       console.table(roles);
       break;
 
@@ -77,9 +77,9 @@ const start = async () => {
     //   break;
 
     case "Exit":
-      const Exit = await Exit;
       console.log("Take Care!");
-      break;
+      process.exit();
   }
+  start(false);
 };
-start();
+start(true);
