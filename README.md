@@ -21,6 +21,8 @@ To install this application you will need a text editor like Visual Studio Code.
 
 The user can initialize the app using index.js in the project root directory. This project then uses inquirer to prompt the user through a series of questions. Depending on user input, the javascript will then make connection queries to the MySQL database to display data, insert new rows, update rows, or delete rows.
 
+https://drive.google.com/file/d/10nwXYwhUgB_oO_ALMXbCvQyts_Khlw2W/view
+
 # License
 
 MIT
